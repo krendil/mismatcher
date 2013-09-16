@@ -8,7 +8,7 @@ using Bio.Algorithms.SuffixTree;
 
 namespace Bio.Algorithms.Mismatcher
 {
-    class Mismatcher
+    public class Mismatcher
     {
 
         MUMmer.MUMmer mummer;
@@ -21,6 +21,7 @@ namespace Bio.Algorithms.Mismatcher
             }
 
             this.mummer = new MUMmer.MUMmer(referenceSequence);
+            this.ReferenceSequence = referenceSequence;
         }
 
         #region -- Properties  --
@@ -47,7 +48,7 @@ namespace Bio.Algorithms.Mismatcher
                 matches = mummer.GetMatches(querySequence);
             }
 
-            var mismatches = GetMismatches(matches);
+            var mismatches = GetMismatches(matches, querySequence);
 
             ClassifyMismatches(mismatches, querySequence);
 
@@ -82,32 +83,46 @@ namespace Bio.Algorithms.Mismatcher
                 //TODO: Test translocations by attempting partial match against (nearby?) mismatches7
             }
         }
-
-        private List<Mismatch> GetMismatches(IEnumerable<Match> matches)
+         
+        private List<Mismatch> GetMismatches(IEnumerable<Match> matches, ISequence querySequence)
         {
             List<Mismatch> mismatches = new List<Mismatch>();
 
-            //The indexes just past the last known match in the reference and query sequences, respectively
-            long refLastMatchEnd = 0;
-            long queLastMatchEnd = 0;
-
             Mismatch currentMismatch = new Mismatch();
-            currentMismatch.QuerySequenceOffset = 0;
-            currentMismatch.ReferenceSequenceOffset = 0;
+            var matchEnum = matches.GetEnumerator();
+            
+            Match match = matchEnum.Current;
 
-            foreach (Match match in matches)
+            long gapStartRef = 0;
+            long gapStartQue = 0;
+            bool finished = false;
+
+            while (!finished)
             {
-                currentMismatch.ReferenceSequenceLength = match.ReferenceSequenceOffset - refLastMatchEnd;
-                currentMismatch.QuerySequenceLength = match.QuerySequenceOffset - queLastMatchEnd;
+                currentMismatch.QuerySequenceOffset = gapStartQue;
+                currentMismatch.ReferenceSequenceOffset = gapStartRef;
 
-                mismatches.Add(currentMismatch);
-                //Mismatch's are value types, so they get passed by copy, and we can just keep working on the local copy without messing up the one in the list
+                if (matchEnum.MoveNext())
+                {
+                    match = matchEnum.Current;
+                    currentMismatch.QuerySequenceLength = match.QuerySequenceOffset - gapStartQue;
+                    currentMismatch.ReferenceSequenceLength = match.ReferenceSequenceOffset - gapStartRef;
 
-                currentMismatch.ReferenceSequenceOffset = refLastMatchEnd;
-                currentMismatch.QuerySequenceOffset = queLastMatchEnd;
+                    gapStartQue = match.ReferenceSequenceOffset + match.Length;
+                    gapStartRef = match.QuerySequenceOffset + match.Length;
 
-                refLastMatchEnd = match.ReferenceSequenceOffset + match.Length;
-                queLastMatchEnd = match.QuerySequenceOffset + match.Length;
+                }
+                else
+                { //End of the sequence
+                    currentMismatch.QuerySequenceLength = querySequence.Count - gapStartQue;
+                    currentMismatch.ReferenceSequenceLength = ReferenceSequence.Count - gapStartRef;
+                    finished = true;
+                }
+
+                if (currentMismatch.ReferenceSequenceLength > 0 || currentMismatch.QuerySequenceLength > 0)
+                { //Ignore zero-length mismatches
+                    mismatches.Add(currentMismatch);
+                }
             }
 
             return mismatches;

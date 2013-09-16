@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="Bio, Version=1.0.4300.28638, Culture=neutral, PublicKeyToken=13335e9abfbf69d0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bio\Build\Binaries\Release\Bio.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\.NET Bio\1.1\Tools\Bin\Bio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

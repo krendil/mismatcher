@@ -1,0 +1,4 @@
+obj/
+TestResults/
+MismatchTest/bin/Debug/TestData/Reference.txt
+MismatchTest/bin/

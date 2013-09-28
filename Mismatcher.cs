@@ -54,8 +54,8 @@ namespace Bio.Algorithms.Mismatcher
 		{
 			var querySub = querySequence.GetSubSequence(mismatch.QuerySequenceOffset,
 			                                             mismatch.QuerySequenceLength);
-			var refSub = ReferenceSequence.GetSubSequence(mismatch.ReferenceSequenceLength,
-			                                               mismatch.ReferenceSequenceOffset);
+			var refSub = ReferenceSequence.GetSubSequence(mismatch.ReferenceSequenceOffset,
+			                                               mismatch.ReferenceSequenceLength);
 
 			return querySub.GetComplementedSequence().Equals(refSub);
 
@@ -97,12 +97,12 @@ namespace Bio.Algorithms.Mismatcher
 					mismatch.QuerySequenceOffset = previous.QuerySequenceOffset;
 					mismatches[seenQueFragments[fragment]] = previous;
 				}
-				seenRefFragments.Add(ConvertToString(ReferenceSequence, mismatch.ReferenceSequenceOffset, mismatch.ReferenceSequenceOffset), mismatches.Count);
+				seenRefFragments.Add(ConvertToString(ReferenceSequence, mismatch.ReferenceSequenceOffset, mismatch.ReferenceSequenceLength), mismatches.Count);
 			}
 			if (mismatch.QuerySequenceLength > 0)
 			{
 				string fragment = ConvertToString(querySequence, mismatch.QuerySequenceOffset, mismatch.QuerySequenceLength);
-				if (seenRefFragments.ContainsKey(fragment))
+				if (seenRefFragments.ContainsKey(fragment) && seenRefFragments[fragment] < mismatches.Count)
 				{
 					var previous = mismatches[seenRefFragments[fragment]];
 					previous.QuerySequenceOffset = mismatch.QuerySequenceOffset;
@@ -111,7 +111,14 @@ namespace Bio.Algorithms.Mismatcher
 					mismatch.ReferenceSequenceOffset = previous.ReferenceSequenceOffset;
 					mismatches[seenRefFragments[fragment]] = previous;
 				}
-				seenQueFragments.Add(ConvertToString(querySequence, mismatch.QuerySequenceOffset, mismatch.QuerySequenceOffset), mismatches.Count);
+                if (seenQueFragments.ContainsKey(fragment))
+                {
+                    seenQueFragments[fragment] = mismatches.Count;
+                }
+                else
+                {
+                    seenQueFragments.Add(fragment, mismatches.Count);
+                }
 			}
 		}
 

@@ -25,7 +25,7 @@ namespace Bio.Algorithms.Mismatcher
 		#region -- Properties  --
 		public ISequence ReferenceSequence { get; set; }
 		#endregion
-		public IEnumerable<Mismatch> GetMismatches(ISequence querySequence, bool uniqueInReference = false)
+		public IEnumerable<Mismatch> GetMismatches(ISequence querySequence, bool uniqueInReference = true)
 		{
 			if (querySequence == null)
 			{
@@ -165,8 +165,8 @@ namespace Bio.Algorithms.Mismatcher
 					mismatch.QuerySequenceLength = match.QuerySequenceOffset - gapStartQue;
 					mismatch.ReferenceSequenceLength = match.ReferenceSequenceOffset - gapStartRef;
 
-					gapStartQue = match.ReferenceSequenceOffset + match.Length;
-					gapStartRef = match.QuerySequenceOffset + match.Length;
+					gapStartQue = match.QuerySequenceOffset + match.Length;
+					gapStartRef = match.ReferenceSequenceOffset + match.Length;
 
 				}
 				else
@@ -176,11 +176,12 @@ namespace Bio.Algorithms.Mismatcher
 					finished = true;
 				}
 
-				classifyMismatches(ref mismatch, querySequence);
-				findTranslocation(ref mismatch, querySequence, mismatches, seenRefFragments, seenQueFragments);
 
 				if (mismatch.ReferenceSequenceLength > 0 || mismatch.QuerySequenceLength > 0)
-				{ //Ignore zero-length mismatches
+                { //Ignore zero-length mismatches
+
+                    classifyMismatches(ref mismatch, querySequence);
+                    findTranslocation(ref mismatch, querySequence, mismatches, seenRefFragments, seenQueFragments);
 					mismatches.Add(mismatch);
 				}
 			}

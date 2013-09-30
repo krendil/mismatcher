@@ -113,5 +113,15 @@ namespace MismatchTest
 
         }
 
+        [TestMethod]
+        public void TestType_Insertion() //to test if it is an insertion
+        {
+
+            FastAParser Query = new FastAParser(@"Insertion.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Insertion, first.Type);
+        }
+
     }
 }

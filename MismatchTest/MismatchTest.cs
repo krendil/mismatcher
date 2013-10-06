@@ -123,5 +123,14 @@ namespace MismatchTest
             Assert.AreEqual(MismatchType.Insertion, first.Type);
         }
 
+        [TestMethod]
+        public void TestType_Translocation() //to test if it is a translocation (translocate fisrt 5 sequence with second 5 sequence)
+        {
+            FastAParser Query = new FastAParser(@"Translocation.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Translocation, first.Type);
+        }
+
     }
 }

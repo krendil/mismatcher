@@ -150,5 +150,24 @@ namespace MismatchTest
             Assert.AreEqual(MismatchType.Inversion, first.Type);
         }
 
+        [TestMethod]
+        public void TestType_two() //to test two types together. deletion first, insertion next)
+        {
+            FastAParser Query = new FastAParser(@"two_del_ins.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[1].Type);
+ 
+            /* 
+               foreach (Mismatch mismatch in Mismatches_query)
+                {
+                   Assert.AreEqual(MismatchType.Deletion, mismatch.Type);
+                }
+            */
+        }
+
+
     }
 }

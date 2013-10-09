@@ -36,7 +36,7 @@ namespace Bio.Algorithms.Mismatcher
         /// </summary>
         /// <param name="querySequence">The sequence to compare with the reference</param>
         /// <returns>A collection of Mismatch objects, each one corresponding to a place where the two sequences don't match</returns>
-		public IEnumerable<Mismatch> GetMismatches(ISequence querySequence)
+		public IList<Mismatch> GetMismatches(ISequence querySequence)
 		{
 			if (querySequence == null)
 			{
@@ -61,12 +61,12 @@ namespace Bio.Algorithms.Mismatcher
         /// <returns>True if the complement of the subsequence in the reference is equal to the subsequence in the given query.</returns>
 		private bool isInversion(Mismatch mismatch, ISequence querySequence)
 		{
-			var querySub = querySequence.GetSubSequence(mismatch.QuerySequenceOffset,
-			                                             mismatch.QuerySequenceLength);
-			var refSub = ReferenceSequence.GetSubSequence(mismatch.ReferenceSequenceOffset,
-			                                               mismatch.ReferenceSequenceLength);
+			var complement = querySequence.GetSubSequence(mismatch.QuerySequenceOffset, mismatch.QuerySequenceLength)
+                                .GetComplementedSequence();
 
-			return querySub.GetComplementedSequence().Equals(refSub);
+            return ConvertToString(complement, 0, complement.Count).Equals(
+                ConvertToString(ReferenceSequence, mismatch.ReferenceSequenceOffset, mismatch.ReferenceSequenceLength)
+            );
 
 		}
 

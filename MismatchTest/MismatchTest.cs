@@ -132,5 +132,23 @@ namespace MismatchTest
             Assert.AreEqual(MismatchType.Translocation, first.Type);
         }
 
+        [TestMethod]
+        public void TestType_Deletion() //to test if it is a deletion
+        {
+            FastAParser Query = new FastAParser(@"Deletion.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Deletion, first.Type);
+        }
+
+        [TestMethod]
+        public void TestType_Inversion() //to test if it is an inversion (inversion for the first 5 sequences)
+        {
+            FastAParser Query = new FastAParser(@"Inversion.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Inversion, first.Type);
+        }
+
     }
 }

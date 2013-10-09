@@ -59,9 +59,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="TestData\deletion.txt" />
     <Content Include="TestData\Insertion.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestData\Inversion.txt" />
     <Content Include="TestData\Query.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

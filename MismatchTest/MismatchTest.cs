@@ -114,7 +114,7 @@ namespace MismatchTest
         }
 
         [TestMethod]
-        public void TestType_Insertion() //to test if it is an insertion
+        public void TestType_Insertion() //to test if it is an insertion (in the middle)
         {
 
             FastAParser Query = new FastAParser(@"Insertion.txt");
@@ -131,6 +131,15 @@ namespace MismatchTest
             var first = Mismatches_query.First();
             Assert.AreEqual(MismatchType.Translocation, first.Type);
         }
+
+        [TestMethod] /*-------------------------------------------------------------------------------*/
+        public void TestType_Translocation_moreGap() //to test if it is a translocation (more gap)
+        {
+            FastAParser Query = new FastAParser(@"Translocation_gap.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Translocation, first.Type);
+        }            /*-------------------------------------------------------------------------------*/
 
         [TestMethod]
         public void TestType_Deletion() //to test if it is a deletion
@@ -151,7 +160,7 @@ namespace MismatchTest
         }
 
         [TestMethod]
-        public void TestType_two() //to test two types together. deletion first, insertion next)
+        public void TestType_two1() //to test two types together. deletion first, insertion next)
         {
             FastAParser Query = new FastAParser(@"two_del_ins.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
@@ -166,6 +175,18 @@ namespace MismatchTest
                    Assert.AreEqual(MismatchType.Deletion, mismatch.Type);
                 }
             */
+        }
+
+        [TestMethod]
+        public void TestType_two2() //to test two types together. deletion first, inversion next(second line))
+        {
+            FastAParser Query = new FastAParser(@"two_del_inv.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[1].Type);
+
         }
 
 

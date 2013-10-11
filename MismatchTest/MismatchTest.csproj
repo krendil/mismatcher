@@ -81,8 +81,10 @@
     <Content Include="TestData\Reference.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestData\Tranlocation_gap.txt" />
     <Content Include="TestData\Translocation.txt" />
     <Content Include="TestData\two_del_ins.txt" />
+    <Content Include="TestData\two_del_inv.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

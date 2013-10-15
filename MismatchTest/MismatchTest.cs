@@ -132,14 +132,14 @@ namespace MismatchTest
             Assert.AreEqual(MismatchType.Translocation, first.Type);
         }
 
-        [TestMethod] /*-------------------------------------------------------------------------------*/
+        [TestMethod] 
         public void TestType_Translocation_moreGap() //to test if it is a translocation (more gap)
         {
-            FastAParser Query = new FastAParser(@"Translocation_gap.txt");
+            FastAParser Query = new FastAParser(@"Tranlocation_gap.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
             var first = Mismatches_query.First();
             Assert.AreEqual(MismatchType.Translocation, first.Type);
-        }            /*-------------------------------------------------------------------------------*/
+        }           
 
         [TestMethod]
         public void TestType_Deletion() //to test if it is a deletion
@@ -186,6 +186,126 @@ namespace MismatchTest
             Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
 
             Assert.AreEqual(MismatchType.Inversion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two3() //to test two types together. insertion first (beginning), deletion next(end of first line))
+        {
+            FastAParser Query = new FastAParser(@"two_ins_del.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two4() //to test two types together.inversion first(start of first line),deletion next (end of third line)
+        {
+            FastAParser Query = new FastAParser(@"two_inv_del.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two5() //to test two types together.deletion(beginning 5) and translocation (third line, translocate first 5 with last 5)
+        {
+            FastAParser Query = new FastAParser(@"two_del_trans.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Translocation, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two6() //to test two types together.2 deletion (beginning of first line and third line)
+        {
+            FastAParser Query = new FastAParser(@"two_del_del.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two7() //to test two types together.insertion(beginning 5) and inverstion(end of last line, 5)
+        {
+            FastAParser Query = new FastAParser(@"two_ins_inv.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two8() //to test two types together.insertion(beginning 5) and translocation (third line)
+        {
+            FastAParser Query = new FastAParser(@"two_ins_trans.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Translocation, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two9() //to test two types together.insertion (first and third line)
+        {
+            FastAParser Query = new FastAParser(@"two_ins_ins.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two10() //to test two types together.inversion (first 5) and insertion (first 5 of third line)
+        {
+            FastAParser Query = new FastAParser(@"two_inv_ins.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two11() //to test two types together.inversion (first 5) and translocation (first and last 5 in third line)
+        {
+            FastAParser Query = new FastAParser(@"two_inv_trans.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Translocation, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two11a() //to test two types together.inversion (first 5) and translocation (first and last 5 in second line)
+        {
+            FastAParser Query = new FastAParser(@"two_inv_trans_a.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Translocation, Mismatches_query[1].Type);
 
         }
 

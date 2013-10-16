@@ -334,5 +334,16 @@ namespace MismatchTest
 
         }
 
+        [TestMethod]
+        public void TestType_two12a() //to test two types together. 2 inversion (first and last 5 in first line) 
+        {
+            FastAParser Query = new FastAParser(@"two_inv_inv_a.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[1].Type);
+
+        }
     }
 }

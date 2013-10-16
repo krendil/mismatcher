@@ -297,7 +297,7 @@ namespace MismatchTest
 
         }
 
-        [TestMethod]
+        [TestMethod]    //has problem!!
         public void TestType_two11a() //to test two types together.inversion (first 5) and translocation (first and last 5 in second line)
         {
             FastAParser Query = new FastAParser(@"two_inv_trans_a.txt");
@@ -309,6 +309,30 @@ namespace MismatchTest
 
         }
 
+
+        [TestMethod]
+        public void TestType_two11b() //to test two types together.inversion (first 5) and translocation (last 10(half half) in first line)
+        {
+            FastAParser Query = new FastAParser(@"two_inv_trans_b.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Translocation, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two12() //to test two types together. 2 inversion (first 5 in first and third line) 
+        {
+            FastAParser Query = new FastAParser(@"two_inv_inv.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[1].Type);
+
+        }
 
     }
 }

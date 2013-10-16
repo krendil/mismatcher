@@ -93,7 +93,10 @@
     <Content Include="TestData\two_ins_trans.txt" />
     <Content Include="TestData\two_inv_del.txt" />
     <Content Include="TestData\two_inv_ins.txt" />
+    <Content Include="TestData\two_inv_inv.txt" />
     <Content Include="TestData\two_inv_trans.txt" />
+    <Content Include="TestData\two_inv_trans_a.txt" />
+    <Content Include="TestData\two_inv_trans_b.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

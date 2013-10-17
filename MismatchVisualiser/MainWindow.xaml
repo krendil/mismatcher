@@ -1,28 +1,34 @@
 ﻿<Window x:Class="MismatchVisualiser.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:MismatchVisualiser" SizeToContent="WidthAndHeight" d:DesignHeight="396" d:DesignWidth="794" MinWidth="482" MinHeight="298">
-    <DockPanel Name="DockPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="482">
+        Title="Mismatch Visualiser" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:MismatchVisualiser" SizeToContent="WidthAndHeight" d:DesignHeight="382" d:DesignWidth="504" MinWidth="504" MinHeight="382">
+    <DockPanel Name="DockPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="482" MinHeight="342">
         <Grid DockPanel.Dock="Right" Name="RightPanel" Width="180">
             <Border BorderBrush="Silver" BorderThickness="1" Name="border1">
                 <Grid Name="grid1">
                     <Button Content="&lt;" Height="23" HorizontalAlignment="Left" Margin="6,84,0,0" Name="referenceButton" VerticalAlignment="Top" Width="23" Click="referenceButton_Click" />
-                    <ListBox HorizontalAlignment="Stretch" Margin="35,6,6,36" Name="filesBox" VerticalAlignment="Stretch" />
+                    <ListBox HorizontalAlignment="Stretch" Margin="35,6,6,36" Name="filesBox" VerticalAlignment="Stretch">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Clear" Click="MenuItem_Click" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
                     <Button Content="&lt;" Height="23" HorizontalAlignment="Left" Margin="6,0,0,65" Name="queryButton" VerticalAlignment="Bottom" Width="23" Click="queryButton_Click" />
                     <Button Content="Load Sequence..." Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" Name="folderButton" VerticalAlignment="Bottom" Width="94" Click="folderButton_Click" />
                 </Grid>
             </Border>
         </Grid>
-        <Grid Name="CentrePanel" MinHeight="298" MinWidth="302">
+        <Grid Name="CentrePanel" MinHeight="342" MinWidth="302">
             <Grid.RowDefinitions>
-                <RowDefinition Height="116*" MinHeight="116" />
+                <RowDefinition Height="138*" MinHeight="138" />
                 <RowDefinition Height="66" />
-                <RowDefinition Height="116*" MinHeight="116" />
+                <RowDefinition Height="138*" MinHeight="138" />
             </Grid.RowDefinitions>
-            <Border BorderBrush="Silver" Grid.Row="0" MinHeight="116" MinWidth="301">
+            <Border BorderBrush="Silver" Grid.Row="0" MinWidth="302" MinHeight="138">
                 <my:SequencePanel x:Name="referencePanel" IsReference="True" />
             </Border>
-            <Border BorderBrush="Silver" BorderThickness="1" Grid.Row="2" MinHeight="116" MinWidth="301">
+            <Border BorderBrush="Silver" BorderThickness="1" Grid.Row="2" MinWidth="302" MinHeight="138">
                 <my:SequencePanel x:Name="queryPanel"/>
             </Border>
             <my:SequenceBar Grid.Row="1" HorizontalAlignment="Stretch" Margin="6,6,6,0" x:Name="referenceBar" VerticalAlignment="Top" Height="24" SnapsToDevicePixels="True" IsReference="True" MismatchSelected="onMismatchSelected" />

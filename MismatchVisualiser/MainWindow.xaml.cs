@@ -109,5 +109,10 @@ namespace MismatchVisualiser
             queryPanel.CurrentMismatch = e.Mismatch;
             referencePanel.CurrentMismatch = e.Mismatch;
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            filesBox.Items.Clear();
+        }
     }
 }

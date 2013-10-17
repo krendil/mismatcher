@@ -4,26 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignWidth="377" d:DesignHeight="150" xmlns:my="clr-namespace:MismatchVisualiser" Background="WhiteSmoke" MinWidth="300" MinHeight="114">
+             d:DesignWidth="316" d:DesignHeight="136" xmlns:my="clr-namespace:MismatchVisualiser" Background="WhiteSmoke" MinWidth="300" MinHeight="136" VerticalContentAlignment="Top">
     <Grid Name="stackPanel">
-        <Grid HorizontalAlignment="Stretch" Margin="12,48,12,12" Name="grid1" VerticalAlignment="Center" Height="90">
+        <Grid HorizontalAlignment="Stretch" Margin="12,34,12,12" Name="grid1" VerticalAlignment="Top" Height="90">
             <Grid.RowDefinitions>
                 <RowDefinition Height="31" />
                 <RowDefinition Height="31" />
                 <RowDefinition Height="31" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="53" />
-                <ColumnDefinition Width="71*" />
-                <ColumnDefinition Width="258*" />
+                <ColumnDefinition Width="61*" MinWidth="61" />
+                <ColumnDefinition Width="85*" MinWidth="85" />
+                <ColumnDefinition Width="146*" />
             </Grid.ColumnDefinitions>
             <Label Content="Length" Height="28" HorizontalAlignment="Left" Margin="6,3,0,0" VerticalAlignment="Top" />
-            <Label Content="Offset" Height="28" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Bottom" Grid.Row="1" />
+            <Label Content="Location" Height="28" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Bottom" Grid.Row="1" />
             <Label Content="Type" Height="28" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Bottom" Grid.Row="2" />
-            <Label Content="Label" Grid.Column="1" Height="28" HorizontalAlignment="Right" Margin="0,3,0,0" Name="lengthLabel" VerticalAlignment="Top" />
-            <Label Content="Label" Grid.Column="1" Grid.Row="1" Height="28" HorizontalAlignment="Right" Margin="0,3,0,0" Name="offsetLabel" VerticalAlignment="Top" />
-            <Label Content="Label" Grid.Column="1" Grid.Row="2" Height="28" HorizontalAlignment="Right" Name="typeLabel" VerticalAlignment="Top" />
-            <TextBlock Grid.Column="2" HorizontalAlignment="Center" Margin="6,0" Name="sampleBlock" Text="AACCTTTAACCTTT" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Source Code Pro" TextTrimming="CharacterEllipsis" Grid.Row="1"></TextBlock>
+            <Label Grid.Column="1" Height="28" HorizontalAlignment="Right" Margin="0,3,0,0" Name="lengthLabel" VerticalAlignment="Top" Content="0" />
+            <Label Grid.Column="1" Grid.Row="1" Height="28" HorizontalAlignment="Right" Margin="0,3,0,0" Name="offsetLabel" VerticalAlignment="Top" Content="0" />
+            <Label Grid.Column="1" Grid.Row="2" Height="28" HorizontalAlignment="Right" Name="typeLabel" VerticalAlignment="Top" />
+            <TextBlock Grid.Column="2" HorizontalAlignment="Center" Margin="6,0" Name="sampleBlock" Text="" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Source Code Pro" TextTrimming="CharacterEllipsis" Grid.Row="1"></TextBlock>
             <Grid.Background>
                 <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
                     <GradientStop Color="GhostWhite" Offset="0" />
@@ -31,6 +31,6 @@
                 </LinearGradientBrush>
             </Grid.Background>
         </Grid>
-        <Label Height="28" HorizontalAlignment="Left" Margin="12,17,0,105" Name="sequenceID" VerticalAlignment="Center" Content="(No sequence selected)" />
+        <Label Height="28" HorizontalAlignment="Left" Margin="12,0,0,0" Name="sequenceID" VerticalAlignment="Top" Content="(No sequence selected)" />
     </Grid>
 </UserControl>

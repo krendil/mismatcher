@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MismatchEventArgs.cs" />
     <Compile Include="SequenceBar.xaml.cs">
       <DependentUpon>SequenceBar.xaml</DependentUpon>
     </Compile>

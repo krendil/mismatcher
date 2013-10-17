@@ -76,12 +76,14 @@ namespace MismatchVisualiser
             if (seq == null) return;
 
             mismatcher = new Mismatcher(seq);
+            referencePanel.Sequence = seq;
+            referenceBar.Sequence = seq;
+
             if (query != null)
             {
                 var mismatches = mismatcher.GetMismatches(query);
-                referencePanel.Mismatches = mismatches;
-                queryPanel.Mismatches = mismatches;
-                referencePanel.Sequence = seq;
+                referenceBar.Mismatches = mismatches;
+                queryBar.Mismatches = mismatches;
             }
         }
 
@@ -91,13 +93,21 @@ namespace MismatchVisualiser
             if (seq == null) return;
 
             query = seq;
+            queryPanel.Sequence = seq;
+            queryBar.Sequence = seq;
+
             if (mismatcher != null)
             {
                 var mismatches = mismatcher.GetMismatches(query);
-                referencePanel.Mismatches = mismatches;
-                queryPanel.Mismatches = mismatches;
-                queryPanel.Sequence = seq;
+                referenceBar.Mismatches = mismatches;
+                queryBar.Mismatches = mismatches;
             }
+        }
+
+        private void onMismatchSelected(object sender, MismatchEventArgs e)
+        {
+            queryPanel.CurrentMismatch = e.Mismatch;
+            referencePanel.CurrentMismatch = e.Mismatch;
         }
     }
 }

@@ -22,6 +22,11 @@ namespace MismatchVisualiser
     /// </summary>
     public partial class SequenceBar : FrameworkElement
     {
+
+
+        //Converts distance along the sequence to distance along the bar
+        double seqToBar;
+
         public SequenceBar()
         {
             Mismatches = new List<Mismatch>();
@@ -33,7 +38,10 @@ namespace MismatchVisualiser
         public ISequence Sequence
         {
             get { return (ISequence)GetValue(SequenceProperty); }
-            set { SetValue(SequenceProperty, value); }
+            set {
+                SetValue(SequenceProperty, value);
+                seqToBar = this.ActualWidth / Sequence.Count;
+            }
         }
         public IEnumerable<Mismatch> Mismatches
         {
@@ -48,7 +56,7 @@ namespace MismatchVisualiser
 
         private Brush BackgroundBrush = Brushes.White;
         public Brush DeletionBrush = Brushes.IndianRed;
-        public Brush InsertionBrush = Brushes.AliceBlue;
+        public Brush InsertionBrush = Brushes.DodgerBlue;
         public Brush InversionBrush = Brushes.LightGreen;
         public Brush TranslocationBrush = Brushes.Purple;
         public Brush UnknownBrush = Brushes.Yellow;
@@ -87,53 +95,6 @@ namespace MismatchVisualiser
                 )
             );
 
-        /*
-        public readonly DependencyProperty BackgroundBrushProperty = DependencyProperty.Register(
-            "BackgroundBrush",
-            typeof(Brush),
-            typeof(SequenceBar),
-            new FrameworkPropertyMetadata(null,
-                FrameworkPropertyMetadataOptions.AffectsRender,
-                new PropertyChangedCallback(OnSequenceChanged)
-                )
-            );
-        public readonly DependencyProperty DeletionBrushProperty = DependencyProperty.Register(
-            "DeletionBrush",
-            typeof(Brush),
-            typeof(SequenceBar),
-            new FrameworkPropertyMetadata(null,
-                FrameworkPropertyMetadataOptions.AffectsRender,
-                new PropertyChangedCallback(OnSequenceChanged)
-                )
-            );
-        public readonly DependencyProperty InsertionBrushProperty = DependencyProperty.Register(
-            "InsertionBrush",
-            typeof(Brush),
-            typeof(SequenceBar),
-            new FrameworkPropertyMetadata(null,
-                FrameworkPropertyMetadataOptions.AffectsRender,
-                new PropertyChangedCallback(OnSequenceChanged)
-                )
-            ); 
-        public readonly DependencyProperty TranslocationBrushProperty = DependencyProperty.Register(
-            "TranslocationBrush",
-            typeof(Brush),
-            typeof(SequenceBar),
-            new FrameworkPropertyMetadata(null,
-                FrameworkPropertyMetadataOptions.AffectsRender,
-                new PropertyChangedCallback(OnSequenceChanged)
-                )
-            );
-        public readonly DependencyProperty UnknownBrushProperty = DependencyProperty.Register(
-            "UnknownBrush",
-            typeof(Brush),
-            typeof(SequenceBar),
-            new FrameworkPropertyMetadata(null,
-                FrameworkPropertyMetadataOptions.AffectsRender,
-                new PropertyChangedCallback(OnSequenceChanged)
-                )
-            );
-        */
         #endregion
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -144,8 +105,6 @@ namespace MismatchVisualiser
             drawingContext.DrawRectangle(BackgroundBrush, new Pen(Brushes.Black, 1), bgRect );
 
             if (Sequence == null) return;
-            //Converts distance along the sequence to distance along the bar
-            double seqToBar = bgRect.Width / Sequence.Count;
 
             foreach (Mismatch mismatch in Mismatches)
             {
@@ -176,6 +135,8 @@ namespace MismatchVisualiser
             }
         }
 
+        #region Event Handlers
+
         private static void OnSequenceChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
 
@@ -189,6 +150,53 @@ namespace MismatchVisualiser
         private static void OnMismatchesChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
 
+        }
+
+        #endregion
+
+        private void FrameworkElement_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var pos = e.GetPosition(this);
+            double n = pos.X / seqToBar;
+
+            foreach (var mismatch in Mismatches)
+            {
+                long start;
+                long end;
+                if (IsReference)
+                {
+                    start = mismatch.ReferenceSequenceOffset;
+                    end = start + mismatch.ReferenceSequenceLength;
+                }
+                else
+                {
+                    start = mismatch.QuerySequenceOffset;
+                    end = start + mismatch.QuerySequenceLength;
+                }
+
+                if ( n >= end ) {
+                    continue;
+                }
+                else if (n >= start)
+                {
+                    if (MismatchSelected != null)
+                    {
+                        MismatchSelected(this, new MismatchEventArgs(mismatch));
+                    }
+                    return;
+                }
+            }
+        }
+
+        public event EventHandler<MismatchEventArgs> MismatchSelected;
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            if (Sequence != null)
+            {
+                seqToBar = this.ActualWidth / Sequence.Count;
+            }
         }
     }
 }

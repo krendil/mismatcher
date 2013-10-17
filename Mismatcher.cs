@@ -261,6 +261,8 @@ namespace Bio.Algorithms.Mismatcher
                     finished = true;
                 }
 
+                if (mismatch.ReferenceSequenceLength < 0) mismatch.ReferenceSequenceLength = 0;
+                if (mismatch.QuerySequenceLength < 0) mismatch.QuerySequenceLength = 0;
 
                 if (mismatch.ReferenceSequenceLength > 0 || mismatch.QuerySequenceLength > 0)
                 { //Ignore zero-length mismatches

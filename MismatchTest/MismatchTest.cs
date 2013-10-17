@@ -124,6 +124,26 @@ namespace MismatchTest
         }
 
         [TestMethod]
+        public void TestType_Insertion_a() //to test if it is an insertion (in the beginning)
+        {
+
+            FastAParser Query = new FastAParser(@"Insertion_a.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Insertion, first.Type);
+        }
+
+        [TestMethod]
+        public void TestType_Insertion_b() //to test if it is an insertion (in the end)
+        {
+
+            FastAParser Query = new FastAParser(@"Insertion_b.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Insertion, first.Type);
+        }
+
+        [TestMethod]
         public void TestType_Translocation() //to test if it is a translocation (translocate fisrt 5 sequence with second 5 sequence)
         {
             FastAParser Query = new FastAParser(@"Translocation.txt");
@@ -151,7 +171,8 @@ namespace MismatchTest
         }
 
         [TestMethod]
-        public void TestType_Deletion_a() //to test if it is a deletion(delete first line 5-10)
+        public void TestType_Deletion_a() //to test if it is a deletion(delete first line 5-10) 
+                                          //Reason:the system cannot verify the sequence under 20 characters
         {
             FastAParser Query = new FastAParser(@"Deletion_a.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
@@ -163,6 +184,15 @@ namespace MismatchTest
         public void TestType_Deletion_b() //to test if it is a deletion(delete second line, first 5)
         {
             FastAParser Query = new FastAParser(@"Deletion_b.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Deletion, first.Type);
+        }
+
+        [TestMethod]
+        public void TestType_Deletion_c() //to test if it is a deletion(delete second line, first 5)
+        {
+            FastAParser Query = new FastAParser(@"Deletion_c.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
             var first = Mismatches_query.First();
             Assert.AreEqual(MismatchType.Deletion, first.Type);
@@ -196,7 +226,7 @@ namespace MismatchTest
         }
 
         [TestMethod]
-        public void TestType_two1a() //to test two types together. deletion first line (first 5), insertion next(first line, last 5))
+        public void TestType_two1a() //to test two types together. delete first line (first 5), insertion next(first line, last 5))
         {
             FastAParser Query = new FastAParser(@"two_del_ins_a.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
@@ -208,7 +238,20 @@ namespace MismatchTest
         }
 
         [TestMethod]
+        public void TestType_two1c() //to test two types together. delete first line (middle 5), insertion next(middle 5))
+        {
+            FastAParser Query = new FastAParser(@"two_del_ins_c.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
         public void TestType_two1b() //to test two types together. deletion first line (position5-10), insertion next(second line, last 5))
+                                     //Reason: system cannot verify sequence under 20 characters
         {
             FastAParser Query = new FastAParser(@"two_del_ins_b.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
@@ -343,6 +386,18 @@ namespace MismatchTest
         public void TestType_two11a() //to test two types together.inversion (first 5) and translocation (first and last 5 in second line)
         {
             FastAParser Query = new FastAParser(@"two_inv_trans_a.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Translocation, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two11c() //to test two types together.inversion (middle 5) and translocation (first and last 5 in second line)
+        {
+            FastAParser Query = new FastAParser(@"two_inv_trans_c.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
 
             Assert.AreEqual(MismatchType.Inversion, Mismatches_query[0].Type);

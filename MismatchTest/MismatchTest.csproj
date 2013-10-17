@@ -60,9 +60,13 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="TestData\Deletion_a.txt" />
+    <Content Include="TestData\Deletion_b.txt" />
+    <Content Include="TestData\Deletion_c.txt" />
     <Content Include="TestData\Insertion.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestData\Insertion_a.txt" />
+    <Content Include="TestData\Insertion_b.txt" />
     <Content Include="TestData\Inversion.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -89,6 +93,7 @@
     <Content Include="TestData\two_del_ins.txt" />
     <Content Include="TestData\two_del_ins_a.txt" />
     <Content Include="TestData\two_del_ins_b.txt" />
+    <Content Include="TestData\two_del_ins_c.txt" />
     <Content Include="TestData\two_del_inv.txt" />
     <Content Include="TestData\two_del_trans.txt" />
     <Content Include="TestData\two_ins_del.txt" />
@@ -102,6 +107,7 @@
     <Content Include="TestData\two_inv_trans.txt" />
     <Content Include="TestData\two_inv_trans_a.txt" />
     <Content Include="TestData\two_inv_trans_b.txt" />
+    <Content Include="TestData\two_inv_trans_c.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

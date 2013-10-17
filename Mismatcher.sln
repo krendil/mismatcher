@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MismatchTest", "MismatchTest\MismatchTest.csproj", "{C2DF8771-5B8B-49A9-BAD1-EA5E009E5034}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MismatchVisualiser", "..\MismatchVisualiser\MismatchVisualiser.csproj", "{6ACBB35F-A995-4374-8DD3-4EBED94552DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MismatchVisualiser", "MismatchVisualiser\MismatchVisualiser.csproj", "{6ACBB35F-A995-4374-8DD3-4EBED94552DD}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution

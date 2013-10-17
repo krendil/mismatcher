@@ -28,7 +28,11 @@ namespace Bio.Algorithms.Mismatcher
         }
 
         #region -- Properties  --
-        public ISequence ReferenceSequence { get; set; }
+        public ISequence ReferenceSequence
+        {
+            get;
+            private set;
+        }
         #endregion
 
         /// <summary>

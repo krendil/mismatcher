@@ -139,8 +139,9 @@ namespace MismatchVisualiser
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            Rect bgRect = new Rect(0, 0, this.Width, this.Height);
-            drawingContext.DrawRectangle(BackgroundBrush, null, bgRect );
+            //Rect bgRect = this.Clip.Bounds;
+            Rect bgRect = new Rect(0, 0, this.ActualWidth, this.ActualHeight);
+            drawingContext.DrawRectangle(BackgroundBrush, new Pen(Brushes.Black, 1), bgRect );
 
             if (Sequence == null) return;
             //Converts distance along the sequence to distance along the bar
@@ -171,7 +172,7 @@ namespace MismatchVisualiser
                         brush = UnknownBrush; break;
                 }
 
-                drawingContext.DrawRectangle(brush, null, mmRect);
+                drawingContext.DrawRectangle(brush, new Pen(brush, 1), mmRect);
             }
         }
 

@@ -11,6 +11,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+
+using Bio;
+using Bio.IO;
+using Bio.Algorithms.Mismatcher;
 
 namespace MismatchVisualiser
 {
@@ -19,9 +24,80 @@ namespace MismatchVisualiser
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private Mismatcher mismatcher;
+        private ISequence query;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+
+        private void loadFiles(string[] files)
+        {
+
+            foreach(var file in files) {
+
+                var parser = SequenceParsers.FindParserByFileName(file);
+                //Default to the simplest format
+                if (parser == null) parser = new Bio.IO.FastA.FastAParser(file);
+
+                foreach (ISequence seq in parser.Parse())
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Content = seq.ID;
+                    item.Tag = seq;
+                    filesBox.Items.Add(item);
+                }
+            }
+        }
+
+        private void folderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Multiselect = true;
+            bool? result = dialog.ShowDialog();
+            loadFiles(dialog.FileNames);
+        }
+
+        private ISequence getCurrentSequence()
+        {
+            var item = filesBox.SelectedItem as ListViewItem;
+            if (item == null) return null;
+            var sequence = item.Tag as ISequence;
+            if (sequence == null) throw new Exception("Sequence not stored");
+            return sequence;
+        }
+
+        private void referenceButton_Click(object sender, RoutedEventArgs e)
+        {
+            ISequence seq = getCurrentSequence();
+            if (seq == null) return;
+
+            mismatcher = new Mismatcher(seq);
+            if (query != null)
+            {
+                var mismatches = mismatcher.GetMismatches(query);
+                referencePanel.Mismatches = mismatches;
+                queryPanel.Mismatches = mismatches;
+                referencePanel.Sequence = seq;
+            }
+        }
+
+        private void queryButton_Click(object sender, RoutedEventArgs e)
+        {
+            ISequence seq = getCurrentSequence();
+            if (seq == null) return;
+
+            query = seq;
+            if (mismatcher != null)
+            {
+                var mismatches = mismatcher.GetMismatches(query);
+                referencePanel.Mismatches = mismatches;
+                queryPanel.Mismatches = mismatches;
+                queryPanel.Sequence = seq;
+            }
         }
     }
 }

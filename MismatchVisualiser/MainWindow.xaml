@@ -6,7 +6,7 @@
         <Grid DockPanel.Dock="Right" Name="RightPanel" Width="180">
             <Border BorderBrush="Silver" BorderThickness="1" Name="border1">
                 <Grid Name="grid1">
-                    <Button Content="&lt;" Height="23" HorizontalAlignment="Left" Margin="6,84,0,0" Name="referenceButton" VerticalAlignment="Top" Width="23" Click="referenceButton_Click" />
+                    <Button Content="&lt;" Height="23" HorizontalAlignment="Left" Margin="6,69,0,0" Name="referenceButton" VerticalAlignment="Top" Width="23" Click="referenceButton_Click" />
                     <ListBox HorizontalAlignment="Stretch" Margin="35,6,6,36" Name="filesBox" VerticalAlignment="Stretch">
                         <ListBox.ContextMenu>
                             <ContextMenu>
@@ -14,7 +14,7 @@
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
-                    <Button Content="&lt;" Height="23" HorizontalAlignment="Left" Margin="6,0,0,65" Name="queryButton" VerticalAlignment="Bottom" Width="23" Click="queryButton_Click" />
+                    <Button Content="&lt;" Height="23" HorizontalAlignment="Left" Margin="6,243,0,0" Name="queryButton" VerticalAlignment="Top" Width="23" Click="queryButton_Click" />
                     <Button Content="Load Sequence..." Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" Name="folderButton" VerticalAlignment="Bottom" Width="94" Click="folderButton_Click" />
                 </Grid>
             </Border>

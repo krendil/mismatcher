@@ -135,16 +135,34 @@ namespace MismatchTest
         [TestMethod] 
         public void TestType_Translocation_moreGap() //to test if it is a translocation (more gap)
         {
-            FastAParser Query = new FastAParser(@"Tranlocation_gap.txt");
+            FastAParser Query = new FastAParser(@"Translocation_gap.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
             var first = Mismatches_query.First();
             Assert.AreEqual(MismatchType.Translocation, first.Type);
         }           
 
         [TestMethod]
-        public void TestType_Deletion() //to test if it is a deletion
+        public void TestType_Deletion() //to test if it is a deletion(delete first 5)
         {
             FastAParser Query = new FastAParser(@"Deletion.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Deletion, first.Type);
+        }
+
+        [TestMethod]
+        public void TestType_Deletion_a() //to test if it is a deletion(delete first line 5-10)
+        {
+            FastAParser Query = new FastAParser(@"Deletion_a.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+            var first = Mismatches_query.First();
+            Assert.AreEqual(MismatchType.Deletion, first.Type);
+        }
+
+        [TestMethod]
+        public void TestType_Deletion_b() //to test if it is a deletion(delete second line, first 5)
+        {
+            FastAParser Query = new FastAParser(@"Deletion_b.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
             var first = Mismatches_query.First();
             Assert.AreEqual(MismatchType.Deletion, first.Type);
@@ -160,7 +178,7 @@ namespace MismatchTest
         }
 
         [TestMethod]
-        public void TestType_two1() //to test two types together. deletion first, insertion next)
+        public void TestType_two1() //to test two types together. deletion first line, last 5. insertion next,second line, last5)
         {
             FastAParser Query = new FastAParser(@"two_del_ins.txt");
             var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
@@ -175,6 +193,30 @@ namespace MismatchTest
                    Assert.AreEqual(MismatchType.Deletion, mismatch.Type);
                 }
             */
+        }
+
+        [TestMethod]
+        public void TestType_two1a() //to test two types together. deletion first line (first 5), insertion next(first line, last 5))
+        {
+            FastAParser Query = new FastAParser(@"two_del_ins_a.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[1].Type);
+
+        }
+
+        [TestMethod]
+        public void TestType_two1b() //to test two types together. deletion first line (position5-10), insertion next(second line, last 5))
+        {
+            FastAParser Query = new FastAParser(@"two_del_ins_b.txt");
+            var Mismatches_query = Mismatch_Test.GetMismatches(Query.Parse().First());
+
+            Assert.AreEqual(MismatchType.Deletion, Mismatches_query[0].Type);
+
+            Assert.AreEqual(MismatchType.Insertion, Mismatches_query[1].Type);
+
         }
 
         [TestMethod]

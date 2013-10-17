@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="TestData\deletion.txt" />
+    <Content Include="TestData\Deletion_a.txt" />
     <Content Include="TestData\Insertion.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -87,6 +87,8 @@
     <Content Include="TestData\Translocation.txt" />
     <Content Include="TestData\two_del_del.txt" />
     <Content Include="TestData\two_del_ins.txt" />
+    <Content Include="TestData\two_del_ins_a.txt" />
+    <Content Include="TestData\two_del_ins_b.txt" />
     <Content Include="TestData\two_del_inv.txt" />
     <Content Include="TestData\two_del_trans.txt" />
     <Content Include="TestData\two_ins_del.txt" />

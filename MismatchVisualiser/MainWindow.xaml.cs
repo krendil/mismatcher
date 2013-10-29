@@ -114,5 +114,15 @@ namespace MismatchVisualiser
         {
             filesBox.Items.Clear();
         }
+
+        private void stackPanel1_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            const double zoomFactor = 0.9;
+            double total = e.Delta < 0 ? zoomFactor : (1 / zoomFactor);
+            referenceBar.ZoomFactor = referenceBar.ZoomFactor * total;
+            queryBar.ZoomFactor = queryBar.ZoomFactor * total;
+        }
+
+
     }
 }

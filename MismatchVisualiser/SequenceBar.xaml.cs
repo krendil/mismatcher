@@ -25,7 +25,8 @@ namespace MismatchVisualiser
 
 
         //Converts distance along the sequence to distance along the bar
-        double seqToBar;
+        double zoomFactor = 1.0;
+
 
         public SequenceBar()
         {
@@ -40,7 +41,7 @@ namespace MismatchVisualiser
             get { return (ISequence)GetValue(SequenceProperty); }
             set {
                 SetValue(SequenceProperty, value);
-                seqToBar = this.ActualWidth / Sequence.Count;
+                this.Width = value.Count * ZoomFactor;
             }
         }
         public IEnumerable<Mismatch> Mismatches
@@ -48,10 +49,22 @@ namespace MismatchVisualiser
             get { return (IEnumerable<Mismatch>)GetValue(MismatchesProperty); }
             set { SetValue(MismatchesProperty, value); }
         }
+
         public bool IsReference
         {
             get { return (bool)GetValue(IsReferenceProperty); }
             set { SetValue(IsReferenceProperty, value); }
+        }
+
+        public double ZoomFactor
+        {
+            get { return zoomFactor; }
+            set 
+            { 
+                zoomFactor = value;
+                this.Width = Sequence.Count * ZoomFactor;
+                this.InvalidateVisual();
+            }
         }
 
         private Brush BackgroundBrush = Brushes.White;
@@ -101,7 +114,7 @@ namespace MismatchVisualiser
         {
             base.OnRender(drawingContext);
             //Rect bgRect = this.Clip.Bounds;
-            Rect bgRect = new Rect(0, 0, this.ActualWidth, this.ActualHeight);
+            Rect bgRect = new Rect(0, 0, this.Width, this.ActualHeight);
             drawingContext.DrawRectangle(BackgroundBrush, new Pen(Brushes.Black, 1), bgRect );
 
             if (Sequence == null) return;
@@ -110,9 +123,9 @@ namespace MismatchVisualiser
             {
                 Rect mmRect;
                 if(IsReference) {
-                    mmRect = new Rect(mismatch.ReferenceSequenceOffset*seqToBar, 0, mismatch.ReferenceSequenceLength*seqToBar, bgRect.Height);
+                    mmRect = new Rect(mismatch.ReferenceSequenceOffset * ZoomFactor, 0, mismatch.ReferenceSequenceLength * ZoomFactor, bgRect.Height);
                 } else {
-                    mmRect = new Rect(mismatch.QuerySequenceOffset*seqToBar, 0, mismatch.QuerySequenceLength*seqToBar, bgRect.Height);
+                    mmRect = new Rect(mismatch.QuerySequenceOffset * ZoomFactor, 0, mismatch.QuerySequenceLength * ZoomFactor, bgRect.Height);
                 }
                 Brush brush;
 
@@ -157,7 +170,7 @@ namespace MismatchVisualiser
         private void FrameworkElement_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var pos = e.GetPosition(this);
-            double n = pos.X / seqToBar;
+            double n = pos.X / zoomFactor;
 
             foreach (var mismatch in Mismatches)
             {
@@ -195,7 +208,7 @@ namespace MismatchVisualiser
             base.OnRenderSizeChanged(sizeInfo);
             if (Sequence != null)
             {
-                seqToBar = this.ActualWidth / Sequence.Count;
+                zoomFactor = this.ActualWidth / Sequence.Count;
             }
         }
     }

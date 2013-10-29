@@ -22,7 +22,7 @@
         <Grid Name="CentrePanel" MinHeight="342" MinWidth="302">
             <Grid.RowDefinitions>
                 <RowDefinition Height="138*" MinHeight="138" />
-                <RowDefinition Height="66" />
+                <RowDefinition Height="88" />
                 <RowDefinition Height="138*" MinHeight="138" />
             </Grid.RowDefinitions>
             <Border BorderBrush="Silver" Grid.Row="0" MinWidth="302" MinHeight="138">
@@ -31,8 +31,12 @@
             <Border BorderBrush="Silver" BorderThickness="1" Grid.Row="2" MinWidth="302" MinHeight="138">
                 <my:SequencePanel x:Name="queryPanel"/>
             </Border>
-            <my:SequenceBar Grid.Row="1" HorizontalAlignment="Stretch" Margin="6,6,6,0" x:Name="referenceBar" VerticalAlignment="Top" Height="24" SnapsToDevicePixels="True" IsReference="True" MismatchSelected="onMismatchSelected" />
-            <my:SequenceBar Height="24" HorizontalAlignment="Stretch" Margin="6,36,6,0" x:Name="queryBar" VerticalAlignment="Top" Grid.Row="1" SnapsToDevicePixels="True" MismatchSelected="onMismatchSelected" />
+            <ScrollViewer Name="scrollViewer1" Margin="0" Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" CanContentScroll="True" Width="{Binding ElementName=CentrePanel, Path=ActualWidth}">
+                <StackPanel Name="stackPanel1" CanHorizontallyScroll="True" MouseWheel="stackPanel1_MouseWheel" CanVerticallyScroll="False" ClipToBounds="False" Height="66">
+                    <my:SequenceBar x:Name="referenceBar" Height="24" SnapsToDevicePixels="True" IsReference="True" MismatchSelected="onMismatchSelected" Grid.Row="1" Margin="6" />
+                    <my:SequenceBar Height="24" x:Name="queryBar" SnapsToDevicePixels="True" MismatchSelected="onMismatchSelected" Margin="6,0,6,6" />
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>

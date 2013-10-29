@@ -37,7 +37,8 @@ namespace MismatchVisualiser
         private void loadFiles(string[] files)
         {
 
-            foreach(var file in files) {
+            foreach (var file in files)
+            {
 
                 var parser = SequenceParsers.FindParserByFileName(file);
                 //Default to the simplest format
@@ -117,10 +118,52 @@ namespace MismatchVisualiser
 
         private void stackPanel1_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            const double zoomFactor = 0.9;
-            double total = e.Delta < 0 ? zoomFactor : (1 / zoomFactor);
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                zoomBars(e.Delta > 0);
+            }
+            else
+            {
+                scrollBars(e.Delta > 0);
+            }
+        }
+
+        private void zoomBars(bool zoomIn)
+        {
+            const double zoomFactor = 1.1;
+            double total = zoomIn ? zoomFactor : (1 / zoomFactor);
             referenceBar.ZoomFactor = referenceBar.ZoomFactor * total;
             queryBar.ZoomFactor = queryBar.ZoomFactor * total;
+        }
+
+        private void scrollBars(bool scrollLeft)
+        {
+            if (scrollLeft)
+            {
+                scrollViewer1.LineLeft();
+            }
+            else
+            {
+                scrollViewer1.LineRight();
+            }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control)) {
+                switch (e.Key)
+                {
+                    case Key.Add:
+                    case Key.OemPlus:
+                        zoomBars(true); break;
+
+                    case Key.OemMinus:
+                    case Key.Subtract:
+                        zoomBars(false); break;
+
+                    default: break;
+                }
+            }
         }
 
 

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="MismatchVisualiser.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mismatch Visualiser" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:MismatchVisualiser" SizeToContent="WidthAndHeight" d:DesignHeight="382" d:DesignWidth="504" MinWidth="504" MinHeight="382" KeyDown="Window_KeyDown">
+        Title="Mismatch Visualiser" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:MismatchVisualiser" SizeToContent="WidthAndHeight" d:DesignHeight="550" d:DesignWidth="580" MinWidth="504" MinHeight="511" KeyDown="Window_KeyDown">
     <DockPanel Name="DockPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="482" MinHeight="342">
         <Grid DockPanel.Dock="Right" Name="RightPanel" Width="180">
             <Border BorderBrush="Silver" BorderThickness="1" Name="border1">
@@ -31,7 +31,7 @@
             <Border BorderBrush="Silver" BorderThickness="1" Grid.Row="2" MinWidth="302" MinHeight="138">
                 <my:SequencePanel x:Name="queryPanel"/>
             </Border>
-            <ScrollViewer Name="scrollViewer1" Margin="0" Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" CanContentScroll="True" Width="{Binding ElementName=CentrePanel, Path=ActualWidth}">
+            <ScrollViewer Name="scrollPanel" Margin="0" Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" CanContentScroll="True" Width="{Binding ElementName=CentrePanel, Path=ActualWidth}">
                 <StackPanel Name="stackPanel1" CanHorizontallyScroll="True" MouseWheel="stackPanel1_MouseWheel" CanVerticallyScroll="False" ClipToBounds="False" Height="66">
                     <my:SequenceBar x:Name="referenceBar" Height="24" SnapsToDevicePixels="True" IsReference="True" MismatchSelected="onMismatchSelected" Grid.Row="1" Margin="6" />
                     <my:SequenceBar Height="24" x:Name="queryBar" SnapsToDevicePixels="True" MismatchSelected="onMismatchSelected" Margin="6,0,6,6" />

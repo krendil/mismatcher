@@ -27,17 +27,24 @@ namespace MismatchVisualiser
 
         private Mismatcher mismatcher;
         private ISequence query;
+        private Dictionary<string, ISequence> loadedSequences;
+        private List<string> loadedFiles;
+        private Dictionary<Comparison, Comparison> noteHolders;
 
         public MainWindow()
         {
             InitializeComponent();
+            loadedSequences = new Dictionary<string, ISequence>();
+            loadedFiles = new List<string>();
+            //noteHolders = new HashSet<Comparison>();
         }
 
+        #region Loading sequences
 
         private void loadFiles(string[] files)
         {
 
-            foreach (var file in files)
+            foreach (string file in files)
             {
 
                 var parser = SequenceParsers.FindParserByFileName(file);
@@ -46,11 +53,20 @@ namespace MismatchVisualiser
 
                 foreach (ISequence seq in parser.Parse())
                 {
+                    string baseTag = file + ":" + seq.ID;
+                    string tag = baseTag;
+                    for (int i = 1; loadedSequences.ContainsKey(tag); i++ )
+                    {
+                        tag = baseTag + i.ToString();
+                    }
                     ListViewItem item = new ListViewItem();
                     item.Content = seq.ID;
-                    item.Tag = seq;
+                    item.Tag = tag;
                     filesBox.Items.Add(item);
+                    loadedSequences.Add(tag, seq);
                 }
+
+                loadedFiles.AddRange(files);
             }
         }
 
@@ -62,13 +78,31 @@ namespace MismatchVisualiser
             loadFiles(dialog.FileNames);
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            filesBox.Items.Clear();
+            loadedSequences.Clear();
+            loadedFiles.Clear();
+        }
+
+        #endregion
+
+
+        #region Displaying sequences
+
         private ISequence getCurrentSequence()
         {
             var item = filesBox.SelectedItem as ListViewItem;
             if (item == null) return null;
-            var sequence = item.Tag as ISequence;
-            if (sequence == null) throw new Exception("Sequence not stored");
-            return sequence;
+            var key = item.Tag.ToString();
+            try
+            {
+                return loadedSequences[key];
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new Exception("Sequence not loaded", e);
+            }
         }
 
         private void referenceButton_Click(object sender, RoutedEventArgs e)
@@ -105,22 +139,27 @@ namespace MismatchVisualiser
             }
         }
 
+        #endregion
+
+
+        #region Selecting Mismatches
+
         private void onMismatchSelected(object sender, MismatchEventArgs e)
         {
             queryPanel.CurrentMismatch = e.Mismatch;
             referencePanel.CurrentMismatch = e.Mismatch;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            filesBox.Items.Clear();
-        }
+        #endregion
+
+
+        #region Zoom and Scroll
 
         private void stackPanel1_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
-                zoomBars(e.Delta > 0);
+                zoomBars(e.Delta > 0, true);
             }
             else
             {
@@ -128,23 +167,38 @@ namespace MismatchVisualiser
             }
         }
 
-        private void zoomBars(bool zoomIn)
+        private void zoomBars(bool zoomIn, bool followMouse = false)
         {
             const double zoomFactor = 1.1;
+
+            double offset;
+
+            if (followMouse)
+            {
+                offset = Mouse.GetPosition(scrollPanel).X;
+            }
+            else
+            {
+                offset = (scrollPanel.ActualWidth * 0.5);
+            }
+            double centre = scrollPanel.HorizontalOffset + offset;
+
             double total = zoomIn ? zoomFactor : (1 / zoomFactor);
             referenceBar.ZoomFactor = referenceBar.ZoomFactor * total;
             queryBar.ZoomFactor = queryBar.ZoomFactor * total;
+
+            scrollPanel.ScrollToHorizontalOffset( (centre*total) - offset);
         }
 
         private void scrollBars(bool scrollLeft)
         {
             if (scrollLeft)
             {
-                scrollViewer1.LineLeft();
+                scrollPanel.LineLeft();
             }
             else
             {
-                scrollViewer1.LineRight();
+                scrollPanel.LineRight();
             }
         }
 
@@ -166,6 +220,7 @@ namespace MismatchVisualiser
             }
         }
 
+        #endregion
 
     }
 }

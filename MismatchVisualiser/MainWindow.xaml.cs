@@ -30,13 +30,18 @@ namespace MismatchVisualiser
         private Dictionary<string, ISequence> loadedSequences;
         private List<string> loadedFiles;
         private Dictionary<Comparison, Comparison> noteHolders;
+        
+        private Comparison currentComparison;
+        private string queryId;
+        private string refId;
+        private int currentMismatch;
 
         public MainWindow()
         {
             InitializeComponent();
             loadedSequences = new Dictionary<string, ISequence>();
             loadedFiles = new List<string>();
-            //noteHolders = new HashSet<Comparison>();
+            noteHolders = new Dictionary<Comparison, Comparison>();
         }
 
         #region Loading sequences
@@ -90,11 +95,16 @@ namespace MismatchVisualiser
 
         #region Displaying sequences
 
-        private ISequence getCurrentSequence()
+        private string getSelectedSequenceId()
         {
             var item = filesBox.SelectedItem as ListViewItem;
             if (item == null) return null;
             var key = item.Tag.ToString();
+            return key;
+        }
+
+        private ISequence getSequence(string key)
+        {
             try
             {
                 return loadedSequences[key];
@@ -107,7 +117,9 @@ namespace MismatchVisualiser
 
         private void referenceButton_Click(object sender, RoutedEventArgs e)
         {
-            ISequence seq = getCurrentSequence();
+            string id = getSelectedSequenceId();
+            this.refId = id;
+            var seq = getSequence(id);
             if (seq == null) return;
 
             mismatcher = new Mismatcher(seq);
@@ -119,12 +131,15 @@ namespace MismatchVisualiser
                 var mismatches = mismatcher.GetMismatches(query);
                 referenceBar.Mismatches = mismatches;
                 queryBar.Mismatches = mismatches;
+                loadComparison();
             }
         }
 
         private void queryButton_Click(object sender, RoutedEventArgs e)
         {
-            ISequence seq = getCurrentSequence();
+            string id = getSelectedSequenceId();
+            this.queryId = id;
+            var seq = getSequence(id);
             if (seq == null) return;
 
             query = seq;
@@ -136,7 +151,23 @@ namespace MismatchVisualiser
                 var mismatches = mismatcher.GetMismatches(query);
                 referenceBar.Mismatches = mismatches;
                 queryBar.Mismatches = mismatches;
+                loadComparison();
             }
+        }
+
+        private void loadComparison()
+        {
+            Comparison blank = new Comparison(this.refId, this.queryId);
+            if (this.noteHolders.ContainsKey(blank))
+            {
+                this.currentComparison = noteHolders[blank];
+            }
+            else
+            {
+                this.currentComparison = blank;
+            }
+            this.notesBox.Text = "";
+            this.notesBox.IsEnabled = false;
         }
 
         #endregion
@@ -148,6 +179,9 @@ namespace MismatchVisualiser
         {
             queryPanel.CurrentMismatch = e.Mismatch;
             referencePanel.CurrentMismatch = e.Mismatch;
+            this.currentMismatch = e.Index;
+            notesBox.Text = currentComparison.GetNote(e.Index);
+            notesBox.IsEnabled = true;
         }
 
         #endregion
@@ -222,5 +256,22 @@ namespace MismatchVisualiser
 
         #endregion
 
+        #region Notes
+
+        private void notesBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (notesBox.Text == currentComparison.GetNote(currentMismatch))
+            {
+                return;
+            }
+            currentComparison.MakeNote(currentMismatch, notesBox.Text);
+
+            if (!noteHolders.ContainsKey(currentComparison))
+            {
+                noteHolders.Add(currentComparison, currentComparison);
+            }
+        }
+
+        #endregion
     }
 }

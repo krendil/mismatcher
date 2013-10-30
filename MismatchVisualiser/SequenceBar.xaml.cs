@@ -172,10 +172,13 @@ namespace MismatchVisualiser
             var pos = e.GetPosition(this);
             double n = pos.X / zoomFactor;
 
+            int i = -1; //Iterate with index
             foreach (var mismatch in Mismatches)
             {
                 long start;
                 long end;
+                i++;
+
                 if (IsReference)
                 {
                     start = mismatch.ReferenceSequenceOffset;
@@ -194,7 +197,7 @@ namespace MismatchVisualiser
                 {
                     if (MismatchSelected != null)
                     {
-                        MismatchSelected(this, new MismatchEventArgs(mismatch));
+                        MismatchSelected(this, new MismatchEventArgs(mismatch, i));
                     }
                     return;
                 }

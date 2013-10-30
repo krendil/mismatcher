@@ -3,6 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Mismatch Visualiser" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:MismatchVisualiser" SizeToContent="WidthAndHeight" d:DesignHeight="451" d:DesignWidth="580" MinWidth="504" MinHeight="403" KeyDown="Window_KeyDown">
     <DockPanel Name="DockPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="482" MinHeight="342">
+        <Menu Name="mainMenu" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save notes" InputGestureText="Ctrl+S" Click="onSaveClicked" />
+                <MenuItem Header="_Load notes..." InputGestureText="Ctrl+O" Click="onLoadClicked" />
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Zoom _In" InputGestureText="Ctrl+=" Click="onMenuZoomIn" />
+                <MenuItem Header="Zoom _Out" InputGestureText="Ctrl+-" />
+            </MenuItem>
+        </Menu>
         <Grid DockPanel.Dock="Right" Name="RightPanel" Width="180">
             <Border BorderBrush="Silver" BorderThickness="1" Name="border1">
                 <Grid Name="grid1">

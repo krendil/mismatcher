@@ -13,6 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 
+using System.Xml;
+using System.Xml.Linq;
+
 using Bio;
 using Bio.IO;
 using Bio.Algorithms.Mismatcher;
@@ -25,10 +28,12 @@ namespace MismatchVisualiser
     public partial class MainWindow : Window
     {
 
+        #region Fields
+
         private Mismatcher mismatcher;
         private ISequence query;
         private Dictionary<string, ISequence> loadedSequences;
-        private List<string> loadedFiles;
+        private HashSet<string> loadedFiles;
         private Dictionary<Comparison, Comparison> noteHolders;
         
         private Comparison currentComparison;
@@ -36,11 +41,17 @@ namespace MismatchVisualiser
         private string refId;
         private int currentMismatch;
 
+        private string notesFile;
+
+        private const char ID_SEP = '*'; //Separates the filename from the sequence ID in extended sequence ids
+
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
             loadedSequences = new Dictionary<string, ISequence>();
-            loadedFiles = new List<string>();
+            loadedFiles = new HashSet<string>();
             noteHolders = new Dictionary<Comparison, Comparison>();
         }
 
@@ -49,29 +60,36 @@ namespace MismatchVisualiser
         private void loadFiles(string[] files)
         {
 
-            foreach (string file in files)
+            foreach (string file in files.Except(loadedFiles))
             {
 
                 var parser = SequenceParsers.FindParserByFileName(file);
                 //Default to the simplest format
                 if (parser == null) parser = new Bio.IO.FastA.FastAParser(file);
 
-                foreach (ISequence seq in parser.Parse())
+                try
                 {
-                    string baseTag = file + ":" + seq.ID;
-                    string tag = baseTag;
-                    for (int i = 1; loadedSequences.ContainsKey(tag); i++ )
+                    foreach (ISequence seq in parser.Parse())
                     {
-                        tag = baseTag + i.ToString();
+                        string baseTag = file + ID_SEP + seq.ID;
+                        string tag = baseTag;
+                        for (int i = 1; loadedSequences.ContainsKey(tag); i++)
+                        {
+                            tag = baseTag + i.ToString();
+                        }
+                        ListViewItem item = new ListViewItem();
+                        item.Content = seq.ID;
+                        item.Tag = tag;
+                        filesBox.Items.Add(item);
+                        loadedSequences.Add(tag, seq);
                     }
-                    ListViewItem item = new ListViewItem();
-                    item.Content = seq.ID;
-                    item.Tag = tag;
-                    filesBox.Items.Add(item);
-                    loadedSequences.Add(tag, seq);
-                }
 
-                loadedFiles.AddRange(files);
+                    loadedFiles.Add(file);
+                }
+                catch (FileFormatException e)
+                {
+                    //Ignore badly formatted files
+                }
             }
         }
 
@@ -236,25 +254,18 @@ namespace MismatchVisualiser
             }
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+
+        private void onMenuZoomIn(object sender, RoutedEventArgs e)
         {
-            if(e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control)) {
-                switch (e.Key)
-                {
-                    case Key.Add:
-                    case Key.OemPlus:
-                        zoomBars(true); break;
-
-                    case Key.OemMinus:
-                    case Key.Subtract:
-                        zoomBars(false); break;
-
-                    default: break;
-                }
-            }
+            zoomBars(true);
+        }
+        private void onMenuZoomOut(object sender, RoutedEventArgs e)
+        {
+            zoomBars(false);
         }
 
         #endregion
+
 
         #region Notes
 
@@ -272,6 +283,174 @@ namespace MismatchVisualiser
             }
         }
 
+        private XmlDocument serialiseNotes()
+        {
+            XmlDocument doc = new XmlDocument();
+
+            XmlElement root = doc.CreateElement("MismatchNotes");
+            doc.AppendChild(root);
+
+            HashSet<string> neededFiles = new HashSet<string>();
+
+            foreach (Comparison comp in noteHolders.Values)
+            {
+                var notesEl = doc.CreateElement("Notes");
+                notesEl.SetAttribute("reference", comp.ReferenceId);
+                notesEl.SetAttribute("query", comp.QueryId);
+
+                string file = comp.ReferenceId.Split(ID_SEP)[0];
+                neededFiles.Add(file);
+                file = comp.QueryId.Split(ID_SEP)[0];
+                neededFiles.Add(file);
+
+                foreach (var note in comp.GetAllNotes())
+                {
+                    var noteEl = doc.CreateElement("Note");
+                    noteEl.SetAttribute("mismatch", note.Key.ToString());
+                    noteEl.InnerXml = note.Value;
+                    notesEl.AppendChild(noteEl);
+                }
+                root.AppendChild(notesEl);
+            }
+
+            var filesEl = doc.CreateElement("Files");
+            StringBuilder sb = new StringBuilder();
+            foreach (string file in neededFiles)
+            {
+                sb.AppendLine(file);
+            }
+            filesEl.InnerXml = sb.ToString();
+            root.AppendChild(filesEl);
+
+            return doc;
+        }
+
+        private void saveNotes()
+        {
+            if (!String.IsNullOrEmpty(notesFile))
+            {
+                saveNotesAs(notesFile);
+            }
+            else
+            {
+                saveNotesAs();
+            }
+        }
+
+        private void saveNotesAs(string filename)
+        {
+            var doc = serialiseNotes();
+            using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            {
+                using (var writer = XmlWriter.Create(fs))
+                {
+                    doc.WriteTo(writer);
+                    writer.Flush();
+                    fs.Flush();
+                }
+            }
+        }
+
+        private void saveNotesAs()
+        {
+            //Ask for filename
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.CreatePrompt = false;
+            dialog.AddExtension = true;
+            dialog.Filter = "Mismatch Visualiser File (*.mvf)|*.mvf";
+            bool? result = dialog.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                this.notesFile = dialog.FileName;
+                saveNotesAs(this.notesFile);
+            }
+        }
+
+        private void loadNotesFrom(string filename)
+        {
+            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                XDocument doc = XDocument.Load(fs);
+                XElement root = doc.Root;
+
+                //Load sequence files
+                var filesElement = root.Element(XName.Get("Files"));
+                string[] files = filesElement.Value.Split(System.Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries );
+                loadFiles(files);
+
+                //Load sequence notes
+                foreach (var notesEl in root.Elements(XName.Get("Notes")))
+                {
+                    Comparison comp = new Comparison(
+                        notesEl.Attribute(XName.Get("reference")).Value,
+                        notesEl.Attribute(XName.Get("query")).Value);
+
+                    foreach (var noteEl in notesEl.Elements(XName.Get("Note")))
+                    {
+                        int index = Int32.Parse(noteEl.Attribute(XName.Get("mismatch")).Value);
+                        comp.MakeNote(index, noteEl.Value);
+                    }
+
+                    if (noteHolders.ContainsKey(comp))
+                    {
+                        noteHolders[comp] = comp;
+                    }
+                    else
+                    {
+                        noteHolders.Add(comp, comp);
+                    }
+                }
+            }
+        }
+
+        private void loadNotes()
+        {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Filter = "Mismatch Visualiser File (*.mvf)|*.mvf";
+            bool? result = dialog.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                loadNotesFrom(dialog.FileName);
+            }
+
+        }
+
+        private void onSaveClicked(object sender, RoutedEventArgs e)
+        {
+            saveNotes();
+        }
+
+        private void onLoadClicked(object sender, RoutedEventArgs e)
+        {
+            loadNotes();
+        }
+
         #endregion
+
+
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                switch (e.Key)
+                {
+                    case Key.Add:
+                    case Key.OemPlus:
+                        zoomBars(true); break;
+
+                    case Key.OemMinus:
+                    case Key.Subtract:
+                        zoomBars(false); break;
+
+                    case Key.S:
+                        saveNotes(); break;
+                    case Key.O:
+                        loadNotes(); break;
+
+                    default: break;
+                }
+            }
+        }
     }
 }

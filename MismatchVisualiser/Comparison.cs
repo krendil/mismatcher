@@ -29,6 +29,11 @@ namespace MismatchVisualiser
             private set;
         }
 
+        public IEnumerable<KeyValuePair<int, string>> GetAllNotes()
+        {
+            return notes;
+        }
+
         public void MakeNote(int mismatch, string note)
         {
             if (notes.ContainsKey(mismatch))
